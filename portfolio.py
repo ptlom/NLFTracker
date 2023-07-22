@@ -98,8 +98,7 @@ for cell in WTS:
     for x in cell:
         weights.append( x.value)
 
-print(assets)
-print(weights)
+
 
 
 
@@ -137,7 +136,7 @@ beta = round(beta, 2)
 st.metric(label="Beta", value=beta)
 
 
-st.subheader('Weekly Performance')
+st.subheader('Daily Performance')
 if len(assets) == 1:
     col1 = st.columns(1, gap = 'small')
 if len(assets) == 2:
@@ -157,32 +156,53 @@ if len(assets) == 8:
 if len(assets) == 9:
     col1, col2, col3, col4, col5, col6, col7, col8, col9 = st.columns(9, gap = 'small')
 if len(assets) > 0:
-    col1.metric(assets[0], round(data.iloc[0][assets[0]], 2), round(data.iloc[1][assets[0]] - data.iloc[0][assets[0]],2)
-)
+    col1.metric(assets[0], round(data.iloc[0][assets[0]], 2), f'{round((data.iloc[0][assets[0]] - data.iloc[1][assets[0]] )/data.iloc[1][assets[0]] ,2) * 100 }%')
+
 if len(assets) > 1:
-    col2.metric(assets[1],round(data.iloc[0][assets[1]],2), round(data.iloc[1][assets[1]] - data.iloc[0][assets[1]],2)
-)
+    col2.metric(assets[1],round(data.iloc[0][assets[1]],2), f'{round((data.iloc[0][assets[1]] - data.iloc[1][assets[1]])/data.iloc[1][assets[1]]* 100,2)}%')
+
 if len(assets) > 2:
-    col3.metric(assets[2], round(data.iloc[0][assets[2]],2), round(data.iloc[1][assets[2]] - data.iloc[0][assets[2]],2)
-)
+    col3.metric(assets[2], round(data.iloc[0][assets[2]],2), f'{round((data.iloc[0][assets[2]] - data.iloc[1][assets[2]])/data.iloc[1][assets[2]] * 100 ,2)}%')
+
 if len(assets) > 3:
-    col4.metric(assets[3], round(data.iloc[0][assets[3]],2), round(data.iloc[1][assets[3]] - data.iloc[0][assets[3]],2)
-)
+    col4.metric(assets[3], round(data.iloc[0][assets[3]],2), f'{round((data.iloc[0][assets[3]] - data.iloc[0][assets[3]])/data.iloc[1][assets[3]]* 100 ,2)}%')
+
 if len(assets) > 4:
-    col5.metric(assets[4], round(data.iloc[0][assets[4]],2), round(data.iloc[1][assets[4]] - data.iloc[0][assets[4]],2)
-)
+    col5.metric(assets[4], round(data.iloc[0][assets[4]],2), f'{round((data.iloc[0][assets[4]] - data.iloc[1][assets[4]])/data.iloc[1][assets[4]],2)* 100}%')
+
 if len(assets) > 5:
-    col6.metric(assets[5], round(data.iloc[0][assets[5]],2), round(data.iloc[1][assets[5]] - data.iloc[0][assets[5]],2)
-)
+    col6.metric(assets[5], round(data.iloc[0][assets[5]],2), f'{round((data.iloc[0][assets[5]] - data.iloc[1][assets[5]])/data.iloc[1][assets[5]], 2)* 100}%')
+
 if len(assets) > 6:
-    col7.metric(assets[6], round(data.iloc[0][assets[6]],2), round(data.iloc[1][assets[6]] - data.iloc[0][assets[6]],2)
-)
+    col7.metric(assets[6], round(data.iloc[0][assets[6]],2), f'{round((data.iloc[0][assets[6]] - data.iloc[1][assets[6]])/data.iloc[1][assets[6]],2)* 100 }%')
+
 if len(assets) > 7:
-    col8.metric(assets[7], round(data.iloc[0][assets[7]],2), round(data.iloc[1][assets[7]] - data.iloc[0][assets[7]],2)
-)
+    col8.metric(assets[7], round(data.iloc[0][assets[7]],2), f'{round((data.iloc[0][assets[7]] - data.iloc[1][assets[7]])/data.iloc[1][assets[7]],2)* 100}%')
+
 if len(assets) > 8:
-    col8.metric(assets[8], round(data.iloc[0][assets[8]],2), round(data.iloc[1][assets[8]] - data.iloc[0][assets[8]],2)
-)
+    col8.metric(assets[8], round(data.iloc[0][assets[8]],2), f'{round((data.iloc[0][assets[8]] - data.iloc[1][assets[8]])/data.iloc[1][assets[8]],2)* 100}%')
+
+prices = pd.Series(data.iloc[0]).values
+prices = prices.round(decimals=2)
+tickers = pd.Series(assets).values
+wt = pd.Series(weights).values
+wt = wt.round(decimals=2)
+st.subheader('Holdings Overview')
+data = data.dropna()
+df = pd.DataFrame(
+    {
+        "Name":tickers, 
+        'Weight':wt,
+        'Price ($)': prices,
+        'Graph': [(data.loc[:, i]).values.tolist() for i in assets]
+    }
+                )
+df['Weight'] = df['Weight'].astype(str) + '%'
+
+df = df.astype(str)
+st.dataframe ( df,use_container_width=True,
+              column_config={'Graph':st.column_config.LineChartColumn("Nominal Performance")}
+              , hide_index=True,)
 
 
 st.subheader('Portfolio Composition')
