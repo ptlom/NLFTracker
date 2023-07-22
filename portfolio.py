@@ -185,7 +185,7 @@ if len(assets) > 8:
 prices = pd.Series(data.iloc[0]).values
 prices = prices.round(decimals=2)
 tickers = pd.Series(assets).values
-wt = pd.Series(weights).values
+wt = pd.Series(weights).values * 100
 wt = wt.round(decimals=2)
 st.subheader('Holdings Overview')
 data = data.dropna()
