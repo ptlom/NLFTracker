@@ -11,7 +11,7 @@ from openpyxl.workbook import Workbook
 from openpyxl import load_workbook
 # If modifying these scopes, delete the file token.json.
 import xlwings as xw
-wb = load_workbook('C:\\Users\\ompat\\Documents\\Portfolio Visualizer\\PAG.xlsx')
+wb = load_workbook('PAG.xlsx')
 sht = wb['Data']
 sht2 = wb['Stats']
 
