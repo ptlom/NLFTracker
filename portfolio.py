@@ -1,5 +1,5 @@
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+
+
 from scipy import stats
 import seaborn as sns
 import pandas as pd
@@ -7,12 +7,6 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
-import os.path
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 import statsmodels.api as sm
 from statsmodels import regression
 
