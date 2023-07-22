@@ -1,4 +1,6 @@
 scipy
+pyqt5
+Cython
 streamlit
 matplotlib
 numpy==1.18.1
@@ -6,5 +8,4 @@ pandas
 statsmodels.api
 xlwings
 yfinance
-Cython
 statsmodels
