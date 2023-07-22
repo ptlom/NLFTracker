@@ -7,45 +7,46 @@ import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 from statsmodels import regression
-
+from openpyxl.workbook import Workbook
+from openpyxl import load_workbook
 # If modifying these scopes, delete the file token.json.
 import xlwings as xw
-wb = xw.Book('PAG.xlsx')
-sht = xw.sheets('Data')
-sht2 = xw.sheets('Stats')
+wb = load_workbook('C:\\Users\\ompat\\Documents\\Portfolio Visualizer\\PAG.xlsx')
+sht = wb['Data']
+sht2 = wb['Stats']
 
-COMM_Holdings = sht.range('B31:B40').value
-COMM_Weights = sht2.range('G7:G11').value
+COMM_Holdings = sht['B31:B40']
+COMM_Weights = sht2['G7:G11']
 
-CD_Holdings = sht.range('B41:B50').value
-CD_Weights = sht2.range('G13:G17').value
+CD_Holdings = sht['B41:B50']
+CD_Weights = sht2['G13:G17']
 
-CS_Holdings = sht.range('B51:B60').value
-CS_Weights = sht2.range('G19:G24').value
+CS_Holdings = sht['B51:B60']
+CS_Weights = sht2['G19:G24']
 
-E_Holdings =sht.range('B61:B70').value
-E_Weights = sht2.range('G26:G30').value
+E_Holdings =sht['B61:B70']
+E_Weights = sht2['G26:G30']
 
-FIN_Holdings = sht.range('B71:B80').value
-FIN_Weights = sht2.range('G32:G38').value
+FIN_Holdings = sht['B71:B80']
+FIN_Weights = sht2['G32:G38']
 
-H_Holdings = sht.range('B81:B90').value
-H_Weights = sht2.range('G40:G48').value
+H_Holdings = sht['B81:B90']
+H_Weights = sht2['G40:G48']
 
-IND_Holdings = sht.range('B91:B100').value
-IND_Weights = sht2.range('G50:G56').value
+IND_Holdings = sht['B91:B100']
+IND_Weights = sht2['G50:G56']
 
-IT_Holdings = sht.range('B101:B110').value
-IT_Weights = sht2.range('G58:G66').value
+IT_Holdings = sht['B101:B110']
+IT_Weights = sht2['G58:G66']
 
-MAT_Holdings =sht.range('B111:B120').value
-MAT_Weights = sht2.range('G68:G71').value
+MAT_Holdings =sht['B111:B120']
+MAT_Weights = sht2['G68:G71']
 
-RE_Holdings = sht.range('B121:B130').value
-RE_Weights = sht2.range('G73:G76').value
+RE_Holdings = sht['B121:B130']
+RE_Weights = sht2['G73:G76']
 
-U_Holdings = sht.range('B131:B140').value
-U_Weights = sht2.range('G78:G81').value
+U_Holdings = sht['B131:B140']
+U_Weights = sht2['G78:G81']
 
 
 option = st.selectbox(
@@ -88,22 +89,32 @@ if option == 'RE':
 if option == 'U':
     holdings = U_Holdings
     WTS = U_Weights
+assets = []
+for cell in holdings:
+    for x in cell:
+        assets.append(x.value)
+weights = []
+for cell in WTS:
+    for x in cell:
+        weights.append( x.value)
+
+print(assets)
+print(weights)
 
 
-sum = sum(WTS)
-for x in range(len(WTS)):
-    WTS[x] = (WTS[x]/sum)
-holdings = list(filter(lambda item: item is not None, holdings))
-assets = holdings
+
+sum = sum(weights)
 
 
-assets = holdings
-weights = WTS
+for x in range(len(weights)):
+    weights[x] = (weights[x]/sum)
+assets = list(filter(lambda item: item is not None, assets))
+
 st.title("Nittany Lion Fund")
 start = st.date_input("Pick a start date for portfolio history", value = pd.to_datetime('2023-01-01'))
 data = yf.download(assets, start=start)['Adj Close']
 ret_df = data.pct_change()[1:]
-port_ret = (ret_df * WTS).sum(axis = 1)
+port_ret = (ret_df * weights).sum(axis = 1)
 cumul_ret = (port_ret + 1).cumprod()-1
 benchmark = yf.download('^SPX', start = start)['Adj Close']
 bench_ret = benchmark.pct_change()[1:]
@@ -176,6 +187,6 @@ if len(assets) > 8:
 
 st.subheader('Portfolio Composition')
 fig, ax = plt.subplots(facecolor = '#FFFFFF')
-ax.pie(WTS, labels = assets, autopct='%1.1f%%', textprops={'color':'black'})
+ax.pie(weights, labels = assets, autopct='%1.1f%%', textprops={'color':'black'})
 st.pyplot(fig)
 #python -m streamlit run "c:/Users/ompat/Documents/Portfolio Visualizer/portfolio.py

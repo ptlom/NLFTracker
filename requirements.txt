@@ -1,5 +1,5 @@
 scipy
-xlwings
+openpyxl
 pandas
 yfinance
 matplotlib
