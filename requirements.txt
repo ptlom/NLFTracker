@@ -1,6 +1,7 @@
 scipy
 streamlit
 matplotlib
+Cython
 numpy==1.18.1
 pandas
 seaborn
@@ -16,4 +17,4 @@ youtube_transcript_api
 yfinance
 patsy
 statsmodels
-Cython
+
