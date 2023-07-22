@@ -1,4 +1,5 @@
 scipy
+xlwings
 pandas
 yfinance
 matplotlib
