@@ -1,15 +1,12 @@
 
 
 from scipy import stats
-import seaborn as sns
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
-import statsmodels.api as sm
 from statsmodels import regression
-from Cython import cythonize
 
 # If modifying these scopes, delete the file token.json.
 import xlwings as xw
