@@ -1,0 +1,16 @@
+scipy
+matplotlib
+numpy==1.18.1
+pandas
+seaborn
+plotly
+lmfit
+statsmodels.api
+imageio
+tabulate
+sklearn
+gsheetsdb
+youtube_transcript_api
+yfinance
+patsy
+statsmodels
