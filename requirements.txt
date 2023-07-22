@@ -1,4 +1,5 @@
 scipy
+streamlit
 matplotlib
 numpy==1.18.1
 pandas
@@ -8,6 +9,7 @@ lmfit
 statsmodels.api
 imageio
 tabulate
+xlwings
 sklearn
 gsheetsdb
 youtube_transcript_api
