@@ -1,6 +1,6 @@
 
 
-from scipy import stats
+###from scipy import stats
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
