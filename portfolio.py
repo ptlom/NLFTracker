@@ -129,7 +129,7 @@ print(len(assets))
 print(assets)
 st.title("Nittany Lion Fund")
 start = st.date_input("Pick a start date for portfolio history", value = pd.to_datetime('2023-01-01'))
-data = yf.download(assets, start=start)['Adj Close']
+data = yf.download(assets, start=start, end="07-21-2023")['Adj Close']
 ret_df = data.pct_change[2:]
 
 port_ret = (ret_df * weights).sum(axis = 1)
