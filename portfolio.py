@@ -130,11 +130,11 @@ print(assets)
 st.title("Nittany Lion Fund")
 start = st.date_input("Pick a start date for portfolio history", value = pd.to_datetime('2023-01-01'))
 data = yf.download(assets, start=start)['Adj Close']
-ret_df = data.pct_change()[1:]
+ret_df = data.pct_change()
 port_ret = (ret_df * weights).sum(axis = 1)
 cumul_ret = (port_ret + 1).cumprod()-1
 benchmark = yf.download('^SPX', start = start)['Adj Close']
-bench_ret = benchmark.pct_change()[1:]
+bench_ret = benchmark.pct_change()
 bench_dev = (bench_ret + 1).cumprod() - 1 
 W = (np.ones(len(ret_df.cov()))/len(ret_df.cov()))
 pf_std = (W.dot(ret_df.cov()).dot(W)) ** 1/2
