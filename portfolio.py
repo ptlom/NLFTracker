@@ -148,13 +148,13 @@ y.name = ('Portfolio Performance')
 tog = pd.concat([bench_dev, cumul_ret], axis=1)
 
 st.line_chart(data = tog)
-
+'''
 st.subheader('Portfolio Beta:')
 (beta, alpha) = stats.linregress(bench_dev.values,
                 cumul_ret.values)[0:2]
 beta = round(beta, 2)
 st.metric(label="Beta", value=beta)
-
+'''
 
 st.subheader('Daily Performance')
 if len(assets) == 1:
