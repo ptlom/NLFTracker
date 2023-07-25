@@ -1,6 +1,6 @@
 
 
-###from scipy import stats
+from scipy import stats
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
@@ -11,88 +11,130 @@ from openpyxl.workbook import Workbook
 from openpyxl import load_workbook
 # If modifying these scopes, delete the file token.json.
 
-wb = load_workbook('PAG.xlsx')
+wb = load_workbook('C:\\Users\\ompat\\Documents\\Portfolio Visualizer\\PAG.xlsx')
 sht = wb['Data']
 sht2 = wb['Stats']
 
 COMM_Holdings = sht['B31:B40']
 COMM_Weights = sht2['M7:M11']
+COMM_Benchmark = '^SP500-50'
 
 CD_Holdings = sht['B41:B50']
 CD_Weights = sht2['M13:M17']
+CD_Benchmark = '^SP500-25'
 
 CS_Holdings = sht['B51:B60']
 CS_Weights = sht2['M19:M24']
+CS_Benchmark = '^SP500-30'
 
 E_Holdings =sht['B61:B65']
 E_Weights = sht2['M26:M30']
+E_Benchmark = '^SP500-30'
 
 FIN_Holdings = sht['B71:B80']
 FIN_Weights = sht2['M32:M38']
+FIN_Benchmark = '^SP500-40'
 
 H_Holdings = sht['B81:B90']
 H_Weights = sht2['M40:M48']
+H_Benchmark = '^SP500-35'
 
-IND_Holdings = sht['M91:M100']
+IND_Holdings = sht['B91:B100']
 IND_Weights = sht2['M50:M56']
+IND_Benchmark = '^SP500-20'
 
 IT_Holdings = sht['B101:B110']
 IT_Weights = sht2['M58:M66']
+IT_Benchmark = '^SP500-45'
 
 MAT_Holdings =sht['B111:B120']
 MAT_Weights = sht2['M68:M71']
+MAT_Benchmark = '^SP500-15'
 
 RE_Holdings = sht['B121:B130']
 RE_Weights = sht2['M73:M76']
+RE_Benchmark = '^SP500-60'
 
 U_Holdings = sht['B131:B140']
 U_Weights = sht2['M78:M81']
+U_Benchmark = '^SP500-55'
 
+Sector_Weights = sht['M15:M25']
+Sectors = sht['A15:A25']
 option = st.selectbox(
     'Select your sector',
     ('NLF', 'COMM', 'CD', 'CS', 'E', 'FIN', 'H', 'IND', 'IT', 'MAT', 'RE', 'U'))
 
+sectornames = []
+sectweight = []
+for cell in Sector_Weights:
+    for a in cell:
+        sectweight.append(a.value * 100)
+for cell in Sectors:
+    for b in cell:
+        sectornames.append(b.value)
 
-
+benchmark = ''
 
 if option == 'COMM':    
     holdings = COMM_Holdings
     WTS = COMM_Weights
+    benchmark = COMM_Benchmark
+
 if option == 'CD':
     holdings = CD_Holdings
     WTS = CD_Weights
+    benchmark = CD_Benchmark
+
 if option == 'CS':
     holdings = CS_Holdings
     WTS = CS_Weights
+    benchmark = CS_Benchmark
+
 if option == 'E':
     holdings = E_Holdings
     WTS = E_Weights
+    benchmark = E_Benchmark
+
 if option == 'FIN':
     holdings = FIN_Holdings
     WTS = FIN_Weights
+    benchmark = FIN_Benchmark
+
 if option == 'H':
     holdings = H_Holdings
     WTS = H_Weights
+    benchmark = H_Benchmark
 
 if option == 'IND':
     holdings = IND_Holdings
     WTS = IND_Weights
+    benchmark = IND_Benchmark
+
 if option == 'IT':
     holdings = IT_Holdings
     WTS = IT_Weights
+    benchmark = IT_Benchmark
+
 if option == 'MAT':
     holdings = MAT_Holdings
     WTS = MAT_Weights
+    benchmark = MAT_Benchmark
+
 if option == 'RE':
     holdings = RE_Holdings
     WTS = RE_Weights
+    benchmark = RE_Benchmark
+
 if option == 'U':
     holdings = U_Holdings
     WTS = U_Weights
+    benchmark = U_Benchmark
 
 if option == 'NLF':
     holdings = COMM_Holdings + CD_Holdings + CS_Holdings + E_Holdings + FIN_Holdings + H_Holdings + IND_Holdings + IT_Holdings + MAT_Holdings + RE_Holdings + U_Holdings
     WTS = COMM_Weights + CD_Weights + CS_Weights + E_Weights + FIN_Weights + H_Weights + IND_Weights + IT_Weights + MAT_Weights + RE_Weights + U_Weights
+    benchmark = '^SPX'
     assets = []
     for cell in holdings:
         for x in cell:
@@ -114,28 +156,22 @@ if option != 'NLF':
     weights = []
     for cell in WTS:
         for x in cell:
-            weights.append( x.value)
+            weights.append(x.value)
     sum = sum(weights)
-
-
     for x in range(len(weights)):
         weights[x] = (weights[x]/sum)
     assets = list(filter(lambda item: item is not None, assets))
 
+print(sectweight)
+print(sectornames)
 
-print(len(weights))
-print(weights)
-print(len(assets))
-print(assets)
 st.title("Nittany Lion Fund")
 start = st.date_input("Pick a start date for portfolio history", value = pd.to_datetime('2023-01-01'))
-start = st.date_input("Pick an end date for portfolio history", value = pd.to_datetime('2022-01-01'))
-data = yf.download(assets, start=start, end=end)['Adj Close']
-ret_df = data.pct_change[1:]
-
+data = yf.download(assets, start=start)['Adj Close']
+ret_df = data.pct_change()[1:]
 port_ret = (ret_df * weights).sum(axis = 1)
 cumul_ret = (port_ret + 1).cumprod()-1
-benchmark = yf.download('^SPX', start = start, end=end)['Adj Close']
+benchmark = yf.download(benchmark, start = start)['Adj Close']
 bench_ret = benchmark.pct_change()[1:]
 bench_dev = (bench_ret + 1).cumprod() - 1 
 W = (np.ones(len(ret_df.cov()))/len(ret_df.cov()))
@@ -148,13 +184,13 @@ y.name = ('Portfolio Performance')
 tog = pd.concat([bench_dev, cumul_ret], axis=1)
 
 st.line_chart(data = tog)
-'''
+
 st.subheader('Portfolio Beta:')
 (beta, alpha) = stats.linregress(bench_dev.values,
                 cumul_ret.values)[0:2]
 beta = round(beta, 2)
 st.metric(label="Beta", value=beta)
-'''
+
 
 st.subheader('Daily Performance')
 if len(assets) == 1:
@@ -222,15 +258,22 @@ df = pd.DataFrame(
     }
                 )
 df['Weight'] = df['Weight'].astype(str) + '%'
-
+print(sectweight)
+print(sectornames)
 df = df.astype(str)
 st.dataframe ( df,use_container_width=True,
               column_config={'Graph':st.column_config.LineChartColumn("Nominal Performance")}
               , hide_index=True,)
 
-
-st.subheader('Portfolio Composition')
-fig, ax = plt.subplots(facecolor = '#FFFFFF')
-ax.pie(weights, labels = assets, autopct='%1.1f%%', textprops={'color':'black'})
-st.pyplot(fig)
+if option == 'NLF':
+    st.subheader('Portfolio Composition')
+    fig, ax = plt.subplots(facecolor = '#FFFFFF')
+    ax.pie(sectweight, labels = sectornames, autopct='%1.1f%%', textprops={'color':'black'})
+    st.pyplot(fig)
+else:
+    st.subheader('Portfolio Composition')
+    fig, ax = plt.subplots(facecolor = '#FFFFFF')
+    ax.pie(weights, labels = assets, autopct='%1.1f%%', textprops={'color':'black'})
+    st.pyplot(fig)
 #python -m streamlit run "c:/Users/ompat/Documents/Portfolio Visualizer/portfolio.py
+#python -m streamlit run "C:\Users\ompat\Documents\Portfolio Visualizer\QuantBASE\psu-quant-portfolio-main\App.py"
